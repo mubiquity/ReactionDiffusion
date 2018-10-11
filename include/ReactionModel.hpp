@@ -27,10 +27,10 @@ public:
     }
 
     std::array<double, 2> update(CellConcentration<2> conc,  std::array<double, 2> conv) override {
-        double newConcA = conc[0] + (dA*conv[0] - conc[0]*conc[1]*conc[1] + feed*(1-conc[0]))*1;
+        double newConcA = conc[0] + (dA*conv[0] - conc[0]*conc[1]*conc[1] + feed*(1-conc[0]));
         newConcA = std::min(1.0, std::max(0.0, newConcA));
 
-        double newConcB = conc[1] + (dB*conv[1] + conc[0]*conc[1]*conc[1] - (kill+feed)*conc[1])*1;
+        double newConcB = conc[1] + (dB*conv[1] + conc[0]*conc[1]*conc[1] - (kill+feed)*conc[1]);
         newConcB = std::min(1.0, std::max(0.0, newConcB));
 
         return std::array<double, 2>{newConcA, newConcB};

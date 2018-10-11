@@ -14,7 +14,7 @@ int main() {
 
     sf::RenderWindow window(sf::VideoMode(WINDOW_SIZE, WINDOW_SIZE, 32), "Gray-Scott Reaction Diffusion");
     // Create a new model that fits to the window size with a half cell gap around the edges
-    auto convolution = std::unique_ptr<AbstractConvolution<WINDOW_SIZE, CHEMICALS>>(new ClassicConvolution<WINDOW_SIZE, CHEMICALS>(-1, 0.2, 0.05));
+    auto convolution = std::unique_ptr<AbstractConvolution<WINDOW_SIZE, CHEMICALS>>(new ClassicConvolution<WINDOW_SIZE, CHEMICALS>(-1, 0.2, 0.05, BoundaryCondition::Restrict));
     auto seeder = std::unique_ptr<AbstractSeeder<WINDOW_SIZE, CHEMICALS>>(new SquareCenterSeed<WINDOW_SIZE, CHEMICALS>(40, {0, 1}));
     //auto seeder = std::unique_ptr<AbstractSeeder<WINDOW_SIZE, CHEMICALS>>(new SpotSeeder<WINDOW_SIZE, CHEMICALS>(20, 4, 25, {0, 1}));
     auto reactionModel = std::unique_ptr<AbstractReactionModel<CHEMICALS>>(GrayScottModel::coral());
@@ -46,13 +46,14 @@ int main() {
 
         // Update the model
         if(!paused) {
-            for(int i = 0; i < 2; ++i) {
+            for(int i = 0; i < 5; ++i) {
                 model.update(clock.restart());
             }
         }
 
         // Draw the result
         window.clear(sf::Color::Black);
+        model.prepareDraw();
         window.draw(model);
         window.display();
     }

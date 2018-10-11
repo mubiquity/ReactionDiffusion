@@ -7,6 +7,7 @@
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Window/Event.hpp>
+#include <omp.h>
 
 #include "ReactionState.hpp"
 #include "ReactionModel.hpp"
@@ -36,8 +37,6 @@ public:
         reactionState = ReactionState<CellDim, ChemicalCount>(std::array<double, ChemicalCount>{1, 0});
 
         seeder->seed(reactionState);
-
-        image.create(CellDim, CellDim, reactionState.getColoring());
     }
 
     void onEvent(sf::Event) {
@@ -47,10 +46,9 @@ public:
     void update(sf::Time) {
         static ReactionState<CellDim, ChemicalCount> nextState = ReactionState<CellDim, ChemicalCount>(std::array<double, ChemicalCount> {1, 0});
 
-        ;
-
-        for(unsigned int x = 1; x < CellDim - 1; ++x) {
-            for(unsigned int y = 1; y < CellDim - 1; ++y) {
+        #pragma omp parallel for collapse(2)
+        for(unsigned int x = 0; x < CellDim; ++x) {
+            for(unsigned int y = 0; y < CellDim; ++y) {
                 std::array<double, ChemicalCount> convRes = (*convolution)(x, y, reactionState);
 
                 const CellConcentration<ChemicalCount> conc = reactionState.getConcentration(x, y);
@@ -60,13 +58,17 @@ public:
         }
 
         reactionState = std::move(nextState);
+    }
+
+    void prepareDraw() {
         image.create(CellDim, CellDim, reactionState.getColoring());
     }
 
     void draw(sf::RenderTarget &target, sf::RenderStates states) const override {
-        sf::Texture tex;
+        static sf::Texture tex;
+        static sf::Sprite sprite;
         tex.loadFromImage(image);
-        sf::Sprite sprite(tex);
+        sprite.setTexture(tex);
         target.draw(sprite, states);
     }
 
@@ -75,6 +77,7 @@ private:
     sf::Image image;
     std::unique_ptr<AbstractConvolution<CellDim, ChemicalCount>> convolution;
     std::unique_ptr<AbstractReactionModel<ChemicalCount>> reactionModel;
+
 };
 
 #endif //REACTIONDIFFUSION2_REACTIONDIFFUSION_HPP

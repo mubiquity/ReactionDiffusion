@@ -3,7 +3,7 @@ set(EXECUTABLE_NAME ReactionDiffusion2)
 project(${EXECUTABLE_NAME})
 
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_FLAGS "-Wall -Wno-class-memaccess -Wextra -Wnon-virtual-dtor -pedantic")
+set(CMAKE_CXX_FLAGS "-Wall -Wno-class-memaccess -Wextra -Wnon-virtual-dtor -pedantic -fopenmp -Ofast -funroll-loops -frename-registers")
 
 set(SOURCES src/main.cpp include/Convolution.hpp include/ReactionState.hpp include/CellConcentration.hpp include/Util.hpp include/Random.hpp include/ReactionDiffusion.hpp include/Seeders.hpp include/ReactionModel.hpp)
 add_executable(${EXECUTABLE_NAME} ${SOURCES})

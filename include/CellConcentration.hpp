@@ -38,7 +38,7 @@ struct CellConcentration {
 
     /// Converts the cell concentration to an SFML colour based on the concentration of each chemical
     sf::Color toColor() const {
-        unsigned long long total = 0;
+        unsigned long total = 0;
         for(unsigned int i = 0; i < ChemicalCount; ++i) {
             unsigned int hue = ((i + 4) * 41);
             sf::Color col = colorFromHSL(hue, 0.70, 0.5);

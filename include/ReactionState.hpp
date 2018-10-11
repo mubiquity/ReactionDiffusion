@@ -39,13 +39,16 @@ public:
 
     /// Returns a vector of colours that can be used to draw the reaction state
     sf::Uint8 *getColoring() {
-        unsigned int i = 0;
+        //unsigned int i = 0;
+        // TODO: Not entirely convinced this one is worth it
+        #pragma omp parallel for schedule(static)
         for(unsigned int index = 0; index < NumCells; ++index) {
             sf::Color col = cells[index].toColor();
-            coloring[i++] = col.r;
-            coloring[i++] = col.g;
-            coloring[i++] = col.b;
-            coloring[i++] = col.a;
+            unsigned int i = index * 4;
+            coloring[i + 0] = col.r;
+            coloring[i + 1] = col.g;
+            coloring[i + 2] = col.b;
+            coloring[i + 3] = col.a;
         }
 
         return &coloring[0];

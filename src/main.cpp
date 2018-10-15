@@ -7,17 +7,20 @@
 
 #include <iostream>
 
-constexpr unsigned int WINDOW_SIZE = 300;
+constexpr unsigned int WINDOW_SIZE = 600;
 constexpr unsigned int CHEMICALS = 2;
 
 int main() {
 
     sf::RenderWindow window(sf::VideoMode(WINDOW_SIZE, WINDOW_SIZE, 32), "Gray-Scott Reaction Diffusion");
     // Create a new model that fits to the window size with a half cell gap around the edges
-    auto convolution = std::unique_ptr<AbstractConvolution<WINDOW_SIZE, CHEMICALS>>(new ClassicConvolution<WINDOW_SIZE, CHEMICALS>(-1, 0.2, 0.05, BoundaryCondition::Restrict));
-    auto seeder = std::unique_ptr<AbstractSeeder<WINDOW_SIZE, CHEMICALS>>(new SquareCenterSeed<WINDOW_SIZE, CHEMICALS>(40, {0, 1}));
-    //auto seeder = std::unique_ptr<AbstractSeeder<WINDOW_SIZE, CHEMICALS>>(new SpotSeeder<WINDOW_SIZE, CHEMICALS>(20, 4, 25, {0, 1}));
+    auto convolution = std::unique_ptr<AbstractConvolution<WINDOW_SIZE, CHEMICALS>>(new ClassicConvolution<WINDOW_SIZE, CHEMICALS>(-1, 0.2, 0.05, BoundaryCondition::Wrap));
+    //auto seeder = std::unique_ptr<AbstractSeeder<WINDOW_SIZE, CHEMICALS>>(new SquareCenterSeed<WINDOW_SIZE, CHEMICALS>(40, {0, 1}));
+    auto seeder = std::unique_ptr<AbstractSeeder<WINDOW_SIZE, CHEMICALS>>(new SpotSeeder<WINDOW_SIZE, CHEMICALS>(20, 4, 15, {0, 1}));
+    //auto seeder = std::unique_ptr<AbstractSeeder<WINDOW_SIZE, CHEMICALS>>(new RandomSeeder<WINDOW_SIZE, CHEMICALS>());
+    //auto seeder = std::unique_ptr<AbstractSeeder<WINDOW_SIZE, CHEMICALS>>(new RandomSpotSeeder<WINDOW_SIZE, CHEMICALS>(20, 10, 20));
     auto reactionModel = std::unique_ptr<AbstractReactionModel<CHEMICALS>>(GrayScottModel::coral());
+    //auto reactionModel = std::unique_ptr<AbstractReactionModel<CHEMICALS>>(new PredatorPreyModel(2./3., 20./3., 1, 1));
 
     ReactionDiffusion<WINDOW_SIZE, CHEMICALS> model(std::move(convolution), std::move(seeder), std::move(reactionModel));
 

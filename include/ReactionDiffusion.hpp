@@ -46,9 +46,10 @@ public:
     void update(sf::Time) {
         static ReactionState<CellDim, ChemicalCount> nextState = ReactionState<CellDim, ChemicalCount>(std::array<double, ChemicalCount> {1, 0});
 
-        #pragma omp parallel for collapse(2)
-        for(unsigned int x = 0; x < CellDim; ++x) {
-            for(unsigned int y = 0; y < CellDim; ++y) {
+        unsigned int x, y;
+        #pragma omp parallel for collapse(2) private(x, y)
+        for(x = 0; x < CellDim; ++x) {
+            for(y = 0; y < CellDim; ++y) {
                 std::array<double, ChemicalCount> convRes = (*convolution)(x, y, reactionState);
 
                 const CellConcentration<ChemicalCount> conc = reactionState.getConcentration(x, y);

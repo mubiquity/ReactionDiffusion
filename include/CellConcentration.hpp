@@ -40,7 +40,7 @@ struct CellConcentration {
     sf::Color toColor() const {
         unsigned long total = 0;
         for(unsigned int i = 0; i < ChemicalCount; ++i) {
-            unsigned int hue = ((i + 4) * 41);
+            unsigned int hue = ((i + 4) * 41); // + 4 for nice blue
             sf::Color col = colorFromHSL(hue, 0.70, 0.5);
 
             double multiplier = i; // incorporating i can give cool effects

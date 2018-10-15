@@ -5,7 +5,13 @@
 #ifndef REACTIONDIFFUSION_UTIL_HPP
 #define REACTIONDIFFUSION_UTIL_HPP
 
+#include <cmath>
+
 #include <SFML/Graphics/Color.hpp>
+
+double constrainZeroOne(double in) {
+    return std::min(1.0, std::max(0.0, in));
+}
 
 float hueToRGB(float v1, float v2, float vH) {
     if (vH < 0)
